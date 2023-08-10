@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-server
+  labels:
+    app: springboot-server
+spec:
+  selector:
+    app: springboot-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31010
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-server
+spec:
+  selector:
+    matchLabels:
+      app: springboot-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: springboot-server
+      annotations:
+        sidecar.opentelemetry.io/inject: "true"
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      containers:
+      - name: app
+        image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/springboot-server
+        ports:
+          - containerPort:  8080
+            protocol: TCP
