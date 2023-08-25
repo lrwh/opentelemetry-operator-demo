@@ -7,8 +7,6 @@ OpenTelemetry Operator 是 Kubernetes Operator 的一种实现。
 - OpenTelemetry Collector
 - Auto-instrumentation ：使用 OpenTelemetry 检测库自动检测工作负载
 
-观测云采集器 DataKit 的引进了 OpenTelemetry 设计理念，兼容了`OTLP` 协议的, 所以可以绕过 OpenTelemetry Collector 直接将数据推送给 DataKit , 也可以把 OpenTelemetry Collector 的 exporter 设置为 `OTLP` ，地址指向 DataKit。
-
 我们将使用两种方案将 APM 数据集成到可观测性后端上。
 
 - APM 数据通过 OpenTelemetry Collector 推送到可观测性后端;
@@ -220,10 +218,7 @@ kubectl apply -f zipkin.yaml
 
 1. 编写 `springboot-server.yaml`
 
-![Img](./FILES/opentelemetry-operator.md/img-20230810162253.png)
-
-
-@startyaml
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -263,7 +258,7 @@ spec:
         ports:
           - containerPort:  8080
             protocol: TCP
-@endyaml
+```
 
 2. 执行 `springboot-server.yaml`
 
@@ -387,14 +382,17 @@ connection				:keep-alive
 
 可以看到已经生成了trace 相关信息： `traceparent`、`b3`。
 
-这里发现日志里面也生成了`traceId`和`spanId`,关于日志如何关联`trace`，参考文档 [日志关联](../integrations/java/#logging)。
+这里发现日志里面也生成了`traceId`和`spanId`,关于日志如何关联`trace`，参考文档 [日志关联](https://docs.guance.com/integrations/java/#logging)。
 
 ### 查看 Zipkin 数据
 
-![Img](./FILES/opentelemetry-operator.md/zipkin.png)
+![zipkin](https://github.com/lrwh/opentelemetry-operator-demo/assets/17264378/d146de56-eed5-48e8-bdc5-b785d6d163d8)
+
 
 
 ## 观测云
+
+观测云采集器 DataKit 的引进了 OpenTelemetry 设计理念，兼容了`OTLP` 协议的, 所以可以绕过 OpenTelemetry Collector 直接将数据推送给 DataKit , 也可以把 OpenTelemetry Collector 的 exporter 设置为 `OTLP` ，地址指向 DataKit。
 
 ### Kubernetes DataKit 安装
 
