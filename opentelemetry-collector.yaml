@@ -18,20 +18,26 @@ spec:
         send_batch_size: 10000
         timeout: 10s
 
-    exporters:
-      logging:
-      otlp:
-        endpoint: "http://datakit-service.datakit:4319" # 将链路信息输出到观测云平台
-        tls:
-          insecure: true
+#    exporters:
+#      logging:
+#      otlp:
+#        endpoint: "http://datakit-service.datakit:4319" # 将链路信息输出到观测云平台
+#        tls:
+#          insecure: true
         #compression: none # 不开启gzip
-
+#      jaeger:
+#        endpoint: http://jaeger-server.jaeger-server:14250
+#        tls:
+#          insecure: true
+      zipkin:
+        endpoint: "http://zipkin-server.zipkin:9411/api/v2/spans"
+        format: proto
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: [memory_limiter, batch]
-          exporters: [logging,otlp]
+          exporters: [logging,zipkin]
         metrics:
           receivers: [otlp]
           processors: [memory_limiter, batch]
